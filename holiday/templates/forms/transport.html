@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    {% if action == 'add' %}
+        <h1>Add Transport for {{ trip['trip_name'] }}</h1>
+    {% else %}
+        <h1>Edit {{trans['transport_name']}}</h1>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    <form method="post">
+
+        <div class="form-group">
+            <label for="transport_name" class="col-form-label">Name</label>
+            <input name="transport_name" class="form-control" id="transport_name" value="{{ trans['transport_name'] }}" required>
+        </div>
+
+
+        <div class="form-group">
+            <label for="transport_url" class="col-form-label">url</label>
+            <input name="transport_url" class="form-control" id="transport_url" placeholder="{% if trans['transport_url'] != ''%}https://{% else %}{{ trans['transport_url'] }}{% endif %}" >
+        </div>
+
+        <div clas="form-group">
+            <label for="transport_type" class="col-form-label">Transport type</label>
+            <select name="transport_type" class="form-control" id="transport_type">
+                <option value="car" {%if trans['transport_type'] == 'car' %}selected{% endif %}>Car</option>
+                <option value="train" {%if trans['transport_type'] == 'train' %}selected{% endif %}>Train</option>
+                <option value="ferry" {%if trans['transport_type'] == 'ferry' %}selected{% endif %}>Ferry</option>
+                <option value="airplane" {%if trans['transport_type'] == 'airplane' %}selected{% endif %}>Airplane</option>
+                <option value="other" {%if trans['transport_type'] == 'other' %}selected{% endif %}>Other</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="transport_start" class="col-form-label">Start Date</label>
+            <input name="transport_start" class="form-control" id="transport_start" value="{{ trans['transport_start'] }}" type="date" required>
+        </div>
+
+        <div class="form-group">
+            <label for="transport_time" class="col-form-label">time</label>
+            <input name="transport_time" class="form-control" id="transport_time" value="{{ trans['transport_time'] }}" type="time">
+        </div>
+
+        <div class="form-group">
+            <label for="transport_dur" class="col-form-label">Duration</label>
+            <input name="transport_dur" class="form-control" id="transport_dur" value="{{ trans['transport_dur'] }}" type="" >
+        </div>
+
+        <div class="form-group">
+            <label for="transport_ref" class="col-form-label">Booking Reference</label>
+            <input name="transport_ref" class="form-control" id="transport_ref" value="{{ trans['transport_ref'] }}">
+        </div>
+
+        <div clas="form-group">
+            <label for="transport_booking" class="col-form-label">Booking status</lable>
+            <select name="transport_booking" class="form-control" id="transport_booking">
+                <option value="na" {% if trans['transport_booking'] == 'na' %}selected{% endif %} >Not Required</option>
+                <option value="nb" {% if trans['transport_booking'] == 'nb' %}selected{% endif %}>Not Booked</option>
+                <option value="bk" {% if trans['transport_booking'] == 'bk' %}selected{% endif %}>Booked</option>
+            </select>
+        </div>
+
+        <div clas="form-group">
+            <label for="transport_paid" class="col-form-label">Payment Status</lable>
+            <select name="transport_paid" class="form-control" id="transport_paid">
+                <option value="na" {% if trans['transport_paid'] == 'na' %}selected {% endif %}>Not Required</option>
+                <option value="np" {% if trans['transport_paid'] == 'np' %}selected {% endif %}>Not Paid</option>
+                <option value="pd" {% if trans['transport_paid'] == 'pd' %}selected {% endif %}>Paid</option>
+            </select>
+        </div>
+
+        <div class="form-group row">
+            <div class="col mt-3">
+                <input id="submit" class="form-control btn btn-danger" type="submit" value="Submit">
+            </div>
+        </div>
+
+    </form>
+
+{% endblock %}

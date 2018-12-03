@@ -1,0 +1,301 @@
+from flask import (
+    Blueprint, flash, g, redirect, render_template, request, url_for
+)
+
+from holiday.auth import login_required
+from holiday.db import get_db
+
+import uuid
+
+bp = Blueprint('main', __name__)
+
+
+@bp.route('/')
+@login_required
+def index():
+
+    db = get_db()
+
+    trips = db.execute(
+        'SELECT * FROM trip'
+        ' ORDER BY trip_start ASC'
+    ).fetchall()
+
+    return render_template('holiday/index.html', trips=trips)
+
+
+@bp.route('/trip/<action>/', methods=['POST', 'GET'], defaults={'trip_id': ''})
+@bp.route('/trip/<action>/<trip_id>', methods=['POST', 'GET'])
+@login_required
+def trip(action, trip_id):
+    db = get_db()
+
+    if action == 'view':
+        trip_data = db.execute(
+        'SELECT * FROM trip WHERE trip_id=?', (trip_id,)
+        ).fetchone()
+
+        accommodation = db.execute(
+            'SELECT * FROM accommodation WHERE trip_id_fk = ? ORDER BY accom_start asc',
+            (trip_id,)
+        ).fetchall()
+
+        transport = db.execute(
+            'SELECT * FROM transport WHERE trip_id_fk = ? ORDER BY transport_start asc',
+            (trip_id,)
+        ).fetchall()
+
+        return render_template(
+            'holiday/trip-details.html',
+            trip=trip_data,
+            accom=accommodation,
+            trans=transport
+        )
+
+    if action == 'add':
+        if request.method == 'POST':
+            trip_name = request.form['trip_name']
+            trip_start = request.form['trip_start']
+            trip_end = request.form['trip_end']
+            if 'trip_accommodation' in request.form:
+                trip_accommodation = 1
+            else:
+                trip_accommodation = 0
+            if 'trip_transport' in request.form:
+                trip_transport = 1
+            else:
+                trip_transport = 0
+            db = get_db()
+            db.execute(
+                'INSERT INTO trip (trip_id, trip_name,'
+                '  trip_start, trip_end, trip_accommodation, trip_transport)'
+                ' VALUES'
+                '  (?, ?, ?, ?, ?, ?)',
+                (str(uuid.uuid4()), trip_name, trip_start,
+                    trip_end, trip_accommodation, trip_transport,)
+            )
+            db.commit()
+            return redirect(url_for('main.index'))
+
+        return render_template(
+            'forms/trip.html',
+            trip=trip,
+            action=action
+        )
+
+    if action == 'edit':
+        if request.method == 'POST':
+            trip_name = request.form['trip_name']
+            trip_start = request.form['trip_start']
+            trip_end = request.form['trip_end']
+            if 'trip_accommodation' in request.form:
+                trip_accommodation = 1
+            else:
+                trip_accommodation = 0
+            if 'trip_transport' in request.form:
+                trip_transport = 1
+            else:
+                trip_transport = 0
+
+            db.execute(
+                'UPDATE trip'
+                ' SET trip_name=?, trip_start=?,'
+                '  trip_end=?, trip_accommodation=?, trip_transport=?'
+                ' WHERE trip_id=?',
+                (trip_name, trip_start, trip_end,
+                    trip_accommodation, trip_transport, trip_id,)
+            )
+            db.commit()
+            return redirect(
+                url_for(
+                    'main.trip',
+                    action='view',
+                    trip_id=trip_id
+                )
+            )
+
+        trip_data = db.execute(
+            'SELECT * FROM trip WHERE trip_id=?',
+            (trip_id,)
+        ).fetchone()
+    return render_template('forms/trip.html', trip=trip_data, action=action)
+
+
+@bp.route('/<trip_id>/<action>/<section>/', methods=['GET', 'POST'], defaults={'section_id': ''})
+@bp.route('/<trip_id>/<action>/<section>/<section_id>', methods=['GET', 'POST'])
+@login_required
+def trip_info(trip_id, section, action, section_id):
+    db = get_db()
+
+    trip = db.execute(
+        'SELECT * FROM trip WHERE trip_id = ?',
+        (trip_id,)
+    ).fetchone()
+
+    if section == 'transport':
+        if action == 'add':
+            if request.method == 'POST':
+                transport_id = str(uuid.uuid4())
+                transport_name = request.form['transport_name']
+                transport_url = request.form['transport_url']
+                transport_start = request.form['transport_start']
+                transport_type = request.form['transport_type']
+                transport_time = request.form['transport_time']
+                transport_dur = request.form['transport_dur']
+                transport_ref = request.form['transport_ref']
+                transport_booking = request.form['transport_booking']
+                transport_paid = request.form['transport_paid']
+                db.execute(
+                    'INSERT INTO transport ('
+                    ' transport_id, transport_name, transport_url,'
+                    ' transport_start, transport_dur,'
+                    ' transport_ref, transport_booking,'
+                    ' transport_paid, transport_type, transport_time,'
+                    ' trip_id_fk,)'
+                    ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                    (transport_id, transport_name, transport_url,
+                        transport_start, transport_dur,
+                        transport_ref, transport_booking,
+                        transport_paid, transport_type, transport_time,
+                        trip_id,)
+                )
+
+                db.commit()
+                return redirect(
+                    url_for(
+                        'main.trip',
+                        trip_id=trip_id,
+                        action='view'
+                    )
+                )
+
+            return render_template(
+                'forms/transport.html',
+                action=action,
+                trans='',
+                trip=trip
+            )
+
+        if action == 'edit':
+            if request.method == 'POST':
+                transport_name = request.form['transport_name']
+                transport_url = request.form['transport_url']
+                transport_start = request.form['transport_start']
+                transport_time = request.form['transport_time']
+                transport_type = request.form['transport_type']
+                transport_dur = request.form['transport_dur']
+                transport_ref = request.form['transport_ref']
+                transport_booking = request.form['transport_booking']
+                transport_paid = request.form['transport_paid']
+                db.execute(
+                    'UPDATE transport'
+                    ' SET transport_name =?, transport_url=?,'
+                    ' transport_start=?,transport_type=?,'
+                    ' transport_dur=?, transport_ref=?,'
+                    ' transport_booking=?, transport_paid=?,'
+                    ' transport_time=?'
+                    ' WHERE transport_id=?',
+                    (transport_name, transport_url, transport_start,
+                        transport_type, transport_dur, transport_ref,
+                        transport_booking, transport_paid, transport_time,
+                        section_id,)
+                )
+                db.commit()
+                return redirect(
+                    url_for(
+                        'main.trip',
+                        action='view',
+                        trip_id=trip_id
+                    )
+                )
+
+            transport = db.execute(
+                'SELECT * FROM transport WHERE transport_id=?',
+                (section_id,)
+            ).fetchone()
+            return render_template('forms/transport.html', trans=transport)
+
+    if section == 'accommodation':
+        if action == 'add':
+            if request.method == 'POST':
+                accom_id = str(uuid.uuid4())
+                accom_start = request.form['accom_start']
+                accom_end = request.form['accom_end']
+                accom_name = request.form['accom_name']
+                accom_url = request.form['accom_url']
+                accom_address = request.form['accom_address']
+                accom_postcode = request.form['accom_postcode']
+                accom_booking = request.form['accom_booking']
+                accom_paid = request.form['accom_paid']
+                trip_id_fk = trip_id
+
+                db.execute(
+                    'INSERT INTO accommodation ('
+                    ' accom_id, accom_start, accom_end, accom_name,'
+                    ' accom_url, accom_address, accon_postcode, trip_id_fk,'
+                    ' accom_booking, accom_paid)'
+                    ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                    (accom_id, accom_start, accom_end, accom_name,
+                        accom_url, accom_address, accom_postcode, trip_id_fk,
+                        accom_booking, accom_paid,)
+                )
+
+                db.commit()
+
+                return redirect(
+                    url_for(
+                        'main.trip',
+                        action='view',
+                        trip_id=trip_id
+                    )
+                )
+
+            return render_template(
+                'forms/accommodation.html',
+                action=action,
+                trip=trip,
+                accom=''
+            )
+
+        if action == 'edit':
+            if request.method == 'POST':
+                accom_id = section_id
+                accom_start = request.form['accom_start']
+                accom_end = request.form['accom_end']
+                accom_name = request.form['accom_name']
+                accom_url = request.form['accom_url']
+                accom_address = request.form['accom_address']
+                accom_postcode = request.form['accom_postcode']
+                accom_booking = request.form['accom_booking']
+                accom_paid = request.form['accom_paid']
+                trip_id_fk = trip_id
+
+                db.execute(
+                    'UPDATE accommodation '
+                    'SET accom_start=?, accom_end=?, accom_name=?,'
+                    ' accom_url=?, accom_address=?, accom_postcode=?,'
+                    ' accom_booking=?, accom_paid=?, trip_id_fk=?'
+                    ' WHERE accom_id=?',
+                    (accom_start, accom_end, accom_name, accom_url,
+                        accom_address, accom_postcode, accom_booking,
+                        accom_paid, trip_id_fk, accom_id)
+                )
+
+                db.commit()
+
+                return redirect(
+                    url_for(
+                        'main.trip',
+                        action='view',
+                        trip_id=trip_id
+                    )
+                )
+
+            accom = db.execute(
+                'SELECT * FROM accommodation WHERE accom_id=?',
+                (section_id,)
+            ).fetchone()
+
+            return render_template(
+                'forms/accommodation.html', trip=trip, accom=accom
+            )

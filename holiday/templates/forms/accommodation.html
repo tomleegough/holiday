@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    {% if action == 'add' %}
+        <h1>Add Acommodation for {{ trip['trip_name'] }}</h1>
+    {% else %}
+        <h1>Edit {{accom['accom_name']}}</h1>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    <form method="post">
+
+        <div class="form-group">
+            <label for="accom_name" class="col-form-label">Name</label>
+            <input name="accom_name" class="form-control" id="accom_name" value="{{ accom['accom_name'] }}"required>
+        </div>
+
+        <div class="form-group">
+            <label for="accom_address" class="col-form-label">Address</label>
+            <textarea name="accom_address" class="form-control" id="accom_address" rows=4></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="accom_postcode" class="col-form-label">Postcode</label>
+            <input name="accom_postcode" class="form-control" id="accom_postcode" value="{{ accom['accom_postcode'] }}" >
+        </div>
+
+        <div class="form-group">
+            <label for="accom_url" class="col-form-label">url</label>
+            <input name="accom_url" class="form-control" id="accom_url" placeholder="{% if accom['accom_url'] != ''%}https://{% else %}{{ accom['accom_url'] }}{% endif %}" >
+        </div>
+
+
+        <div class="form-group">
+            <label for="accom_start" class="col-form-label">Arrival</label>
+            <input name="accom_start" class="form-control" id="accom_start" value="{{ accom['accom_start'] }}" type="date" required>
+        </div>
+
+        <div class="form-group">
+            <label for="accom_end" class="col-form-label">Departure</label>
+            <input name="accom_end" class="form-control" id="accom_end" value="{{ accom['accom_end'] }}" type="date" required>
+        </div>
+
+        <div clas="form-group">
+            <label for="accom_booking" class="col-form-label">Booking status</lable>
+            <select name="accom_booking" class="form-control" id="accom_booking">
+                <option value="na" {% if accom['accom_booking'] == 'na' %}selected{% endif %} >Not Required</option>
+                <option value="nb" {% if accom['accom_booking'] == 'nb' %}selected{% endif %}>Not Booked</option>
+                <option value="bk" {% if accom['accom_booking'] == 'bk' %}selected{% endif %}>Booked</option>
+            </select>
+        </div>
+
+        <div clas="form-group">
+            <label for="accom_paid" class="col-form-label">Payment Status</lable>
+            <select name="accom_paid" class="form-control" id="accom_paid">
+                <option value="na" {% if accom['accom_paid'] == 'na' %}selected {% endif %}>Not Required</option>
+                <option value="np" {% if accom['accom_paid'] == 'np' %}selected {% endif %}>Not Paid</option>
+                <option value="pd" {% if accom['accom_paid'] == 'pd' %}selected {% endif %}>Paid</option>
+            </select>
+        </div>
+
+        <div class="form-group row">
+            <div class="col">
+                <input id="submit" class="form-control btn btn-danger" type="submit" value="Submit">
+            </div>
+        </div>
+
+    </form>
+
+{% endblock %}

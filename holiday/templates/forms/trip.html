@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    {% if action == 'add' %}
+        <h1>Add new trip</h1>
+    {% else %}
+        <h1>Edit {{trip['trip_name'] }}</h1>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    <form method="post">
+        <div class="form-group row">
+            <label for="trip_name" class="col col-form-label">Trip Name</label>
+            <div class="col">
+                <input name="trip_name" class="form-control" id="trip_name" value="{{ trip['trip_name'] }}"required>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="trip_start" class="col col-form-label">Trip Start Date</label>
+            <div class="col">
+                <input name="trip_start" class="form-control" id="trip_start" value="{{ trip['trip_start'] }}" type="date" required>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="trip_end" class="col col-form-label">Trip End Date</label>
+            <div class="col">
+                <input name="trip_end" class="form-control" id="trip_end" value="{{ trip['trip_end'] }}" type="date" required>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="trip_accommodation" class="col-9 col-form-label">Accommodation Required?</label>
+            <div class="col-3">
+                <input name="trip_accommodation" class="form-control" id="trip_accommodation" value="1" type="checkbox" {% if trip['trip_accommodation'] == 1 %}{{ "checked" }}{% endif %}>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="trip_transport" class="col-9 col-form-label">Transport Required?</label>
+            <div class="col-3">
+                <input name="trip_transport" class="form-control" id="trip_transport" value="1" type="checkbox" {% if trip['trip_transport'] == 1 %}{{ "checked" }}{% endif %}>
+            </div>
+        </div>
+        
+        <div class="form-group row">
+            <div class="col">
+                <input id="submit" class="form-control btn btn-danger" type="submit" value="Submit">
+            </div>
+        </div>
+    </form>
+
+
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{{ trip['trip_name'] }}</h1>
+{% endblock %}
+
+{% block toolbar %}
+    
+    <a class="btn btn-outline-secondary" href="{{ url_for('main.trip', action='edit', trip_id=trip['trip_id']) }}">Edit</a>
+    
+{% endblock %}
+
+{% block content %}
+
+    <h2>Overview</h2>
+    <ul>
+        <li><span class="col"><strong>Start Date: </strong></span>{{ trip['trip_start'].strftime('%d %b %Y') }}</li>
+        <li><span class="col"><strong>End Date: </strong></span>{{ trip['trip_end'].strftime('%d %b %Y') }}</li>
+    </ul>
+
+    {% if trip['trip_accommodation'] == 1 %}
+    <h2>
+        Accommodation
+        <a href="{{ url_for('main.trip_info', action='add', section='accommodation', trip_id=trip['trip_id']) }}" class="btn btn-outline-secondary"> + </a>
+    </h2>
+        
+        {% if accom != [] %}
+        <table class="table table-striped table-sm">
+            <tr>
+                <th>Name</th>
+                <th>From</th>
+                <th>To</th>
+                <th>B</th>
+                <th>&pound;</th>
+            </tr>
+
+            {% for each in accom %}
+            <tr>
+                <td><a href="{{ url_for('main.trip_info', action='edit', section='accommodation', trip_id=trip['trip_id'], section_id=each['accom_id']) }}">{{each['accom_name']}}</a></td>
+                <td>{{each['accom_start'].strftime('%d/%m/%y')}}</td>
+                <td>{{each['accom_end'].strftime('%d/%m/%y')}}</td>
+                <td class='p-0'>
+                    {% if each['accom_booking'] == 'nb' %}
+                        <span class="badge badge-danger">&#10005;</span>
+                    {% elif each['accom_booking'] == 'bk' %}
+                        <span class="badge badge-success">&#10003;</span>
+                    {% else %}
+                        <span>n/a</span>
+                    {% endif %}
+                </td>
+                <td class='p-0'>
+                    {% if each['accom_paid'] == 'np' %}
+                        <span class="badge badge-danger">&#10005;</span>
+                    {% elif each['accom_paid'] == 'pd' %}    
+                        <span class="badge badge-success">&#10003;</span>
+                    {% else %}
+                        <span>n/a</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+
+    {% endif %}
+    
+    {% if trip['trip_transport'] == 1 %}
+    <h2>
+        Transport
+        <a href="{{ url_for('main.trip_info', section='transport', action='add', trip_id=trip['trip_id']) }}" class="btn btn-outline-secondary"> + </a>
+    </h2>
+        {% if trans != [] %}
+        <table class="table table-striped table-sm">
+            <tr>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>B</th>
+                <th>&pound;</th>
+            </tr>
+
+            {% for each in trans %}
+            <tr>
+                <td>
+                    <a href="{{ url_for('main.trip_info', section='transport', action='edit', trip_id=trip['trip_id'], section_id=each['transport_id'] )}}">
+                    {{each['transport_name']}}
+                    </a>
+                </td>
+                <td>{{each['transport_start'].strftime('%d/%m/%y')}}</td>
+                <td>{{each['transport_time']}}</td>
+                <td class="p-0">
+                    {% if each['transport_booking'] == 'nb' %}
+                        <span class="badge badge-danger">&#10005;</span>
+                    {% elif each['transport_booking'] == 'bk' %}
+                        <span class="badge badge-success">&#10003;</span>
+                    {% else %}
+                        <span>n/a</span>
+                    {% endif %}
+                </td>
+                <td class="p-0">
+                    {% if each['transport_paid'] == 'np' %}
+                        <span class="badge badge-danger">&#10005;</span>
+                    {% elif each['transport_paid'] == 'pd' %}
+                        <span class="badge badge-success">&#10003;</span>
+                    {% else %}
+                        <span>n/a</span>
+                    {% endif %}
+                </td>
+
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+
+    {% endif %}
+
+{% endblock %}
