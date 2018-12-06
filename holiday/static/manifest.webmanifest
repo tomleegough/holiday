@@ -1,0 +1,13 @@
+{
+  "background_color": "purple",
+  "description": "Add trips, accommodation, transport, and more!",
+  "display": "fullscreen",
+  "icons": [{
+    "src": "drawing.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  }],
+  "name": "Trip planner",
+  "short_name": "Tripper",
+  "start_url": "/"
+}

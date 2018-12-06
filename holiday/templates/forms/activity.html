@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    {% if action == 'add' %}
+        <h1>Add Activity for {{ trip['trip_name'] }}</h1>
+    {% else %}
+        <h1>Edit {{activity['activity_name']}}</h1>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    <form method="post">
+
+        <div class="form-group">
+            <label for="activity_name" class="col-form-label">Name</label>
+            <input name="activity_name" class="form-control" id="activity_name" value="{{ activity['activity_name'] }}"required>
+        </div>
+
+        <div class="form-group">
+            <label for="activity_description" class="col-form-label">Description</label>
+            <textarea name="activity_description" class="form-control" id="activity_description" rows=6></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="activity_url" class="col-form-label">url</label>
+            <input name="activity_url" class="form-control" id="activity_url" placeholder="{% if activity['activity_url'] != ''%}https://{% else %}{{ activity['activity_url'] }}{% endif %}" >
+        </div>
+
+        <div clas="form-group">
+            <label for="activity_travel_method" class="col-form-label">Travel Method</lable>
+            <select name="activity_travel_method" class="form-control" id="activity_travel_method">
+                <option value="car" {% if activity['activity_travel_method'] == 'car' %}selected{% endif %}>Car</option>
+                <option value="walk" {% if activity['activity_travel_method'] == 'walk' %}selected{% endif %}>Walk</option>
+                <option value="bus" {% if activity['activity_travel_method'] == 'bus' %}selected{% endif %}>Bus</option>
+                <option value="train" {% if activity['activity_travel_method'] == 'train' %}selected{% endif %}>Train</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="activity_travel_time" class="col-form-label">Travel Time</label>
+            <input name="activity_travel_time" class="form-control" id="activity_travel_time" value="{{ activity['activity_travel_time'] }}" type="">
+        </div>
+
+        <div clas="form-group">
+            <label for="activity_status" class="col-form-label">Status</lable>
+            <select name="activity_status" class="form-control" id="activity_status">
+                <option value="open" {% if activity['activity_status'] == 'open' %}selected{% endif %}>Not done</option>
+                <option value="closed" {% if activity['activity_status'] == 'closed' %}selected{% endif %}>Done</option>
+            </select>
+        </div>
+
+        <div class="form-group row">
+            <div class="col">
+                <input id="submit" class="form-control btn btn-dark" type="submit" value="Submit">
+            </div>
+        </div>
+
+    </form>
+
+{% endblock %}

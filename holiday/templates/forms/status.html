@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h2>Change Status for {{ trip['trip_name'] }}</h2>
+{% endblock %}
+
+{% block content %}
+
+    <form method="post">
+
+        <div clas="form-group">
+            <label for="transport_booking" class="col-form-label">Booking status</lable>
+            <select name="transport_booking" class="form-control" id="transport_booking">
+                <option value="na" {% if trip['transport_booking'] == 'na' %}selected{% endif %} >Not Required</option>
+                <option value="nb" {% if trip['transport_booking'] == 'nb' %}selected{% endif %}>Not Booked</option>
+                <option value="bk" {% if trip['transport_booking'] == 'bk' %}selected{% endif %}>Booked</option>
+            </select>
+        </div>
+
+        <div clas="form-group">
+            <label for="transport_paid" class="col-form-label">Payment Status</lable>
+            <select name="transport_paid" class="form-control" id="transport_paid">
+                <option value="na" {% if trip['transport_paid'] == 'na' %}selected {% endif %}>Not Required</option>
+                <option value="np" {% if trip['transport_paid'] == 'np' %}selected {% endif %}>Not Paid</option>
+                <option value="pd" {% if trip['transport_paid'] == 'pd' %}selected {% endif %}>Paid</option>
+            </select>
+        </div>
+
+        <div clas="form-group">
+            <label for="accom_booking" class="col-form-label">Booking status</lable>
+            <select name="accom_booking" class="form-control" id="accom_booking">
+                <option value="na" {% if trip['accom_booking'] == 'na' %}selected{% endif %} >Not Required</option>
+                <option value="nb" {% if trip['accom_booking'] == 'nb' %}selected{% endif %}>Not Booked</option>
+                <option value="bk" {% if trip['accom_booking'] == 'bk' %}selected{% endif %}>Booked</option>
+            </select>
+        </div>
+
+        <div clas="form-group">
+            <label for="accom_paid" class="col-form-label">Payment Status</lable>
+            <select name="accom_paid" class="form-control" id="accom_paid">
+                <option value="na" {% if trip['accom_paid'] == 'na' %}selected {% endif %}>Not Required</option>
+                <option value="np" {% if trip['accom_paid'] == 'np' %}selected {% endif %}>Not Paid</option>
+                <option value="pd" {% if trip['accom_paid'] == 'pd' %}selected {% endif %}>Paid</option>
+            </select>
+        </div>
+
+        <div class="form-group row">
+            <div class="col">
+                <input id="submit" class="form-control btn btn-dark" type="submit" value="Submit">
+            </div>
+        </div>
+
+    </form>
+
+{% endblock %}
