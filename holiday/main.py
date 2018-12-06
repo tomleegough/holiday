@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for, session
 )
 
 from holiday.auth import login_required
@@ -18,7 +18,9 @@ def index():
 
     trips = db.execute(
         'SELECT * FROM trip'
-        ' ORDER BY trip_start ASC'
+        ' WHERE user_id_fk=?'
+        ' ORDER BY trip_start ASC',
+        (session['user_id'],)
     ).fetchall()
 
     return render_template('holiday/index.html', trips=trips)
@@ -29,19 +31,29 @@ def index():
 @login_required
 def trip(action, trip_id):
     db = get_db()
+    trip_data = db.execute(
+        'SELECT * FROM trip WHERE trip_id=? and user_id_fk=?',
+        (trip_id, session['user_id'],)
+    ).fetchone()
 
     if action == 'view':
-        trip_data = db.execute(
-        'SELECT * FROM trip WHERE trip_id=?', (trip_id,)
-        ).fetchone()
-
         accommodation = db.execute(
-            'SELECT * FROM accommodation WHERE trip_id_fk = ? ORDER BY accom_start asc',
+            'SELECT * FROM accommodation'
+            ' WHERE trip_id_fk = ?'
+            ' ORDER BY accom_start asc',
             (trip_id,)
         ).fetchall()
 
         transport = db.execute(
-            'SELECT * FROM transport WHERE trip_id_fk = ? ORDER BY transport_start asc',
+            'SELECT * FROM transport'
+            ' WHERE trip_id_fk = ?'
+            ' ORDER BY transport_start asc',
+            (trip_id,)
+        ).fetchall()
+
+        activities = db.execute(
+            'SELECT * FROM activity'
+            ' WHERE trip_id_fk = ?',
             (trip_id,)
         ).fetchall()
 
@@ -49,7 +61,8 @@ def trip(action, trip_id):
             'holiday/trip-details.html',
             trip=trip_data,
             accom=accommodation,
-            trans=transport
+            trans=transport,
+            activities=activities
         )
 
     if action == 'add':
@@ -65,14 +78,20 @@ def trip(action, trip_id):
                 trip_transport = 1
             else:
                 trip_transport = 0
+            if 'trip_activities' in request.form:
+                trip_activities = 1
+            else:
+                trip_activities = 0
             db = get_db()
             db.execute(
                 'INSERT INTO trip (trip_id, trip_name,'
-                '  trip_start, trip_end, trip_accommodation, trip_transport)'
+                '  trip_start, trip_end, trip_accommodation,'
+                '  trip_transport, trip_activities)'
                 ' VALUES'
-                '  (?, ?, ?, ?, ?, ?)',
+                '  (?, ?, ?, ?, ?, ?, ?)',
                 (str(uuid.uuid4()), trip_name, trip_start,
-                    trip_end, trip_accommodation, trip_transport,)
+                    trip_end, trip_accommodation,
+                    trip_transport, trip_activities)
             )
             db.commit()
             return redirect(url_for('main.index'))
@@ -96,14 +115,20 @@ def trip(action, trip_id):
                 trip_transport = 1
             else:
                 trip_transport = 0
+            if 'trip_activities' in request.form:
+                trip_activities = 1
+            else:
+                trip_activities = 0
 
             db.execute(
                 'UPDATE trip'
                 ' SET trip_name=?, trip_start=?,'
-                '  trip_end=?, trip_accommodation=?, trip_transport=?'
+                '  trip_end=?, trip_accommodation=?,'
+                '  trip_transport=?, trip_activities=?'
                 ' WHERE trip_id=?',
                 (trip_name, trip_start, trip_end,
-                    trip_accommodation, trip_transport, trip_id,)
+                    trip_accommodation, trip_transport,
+                    trip_activities, trip_id,)
             )
             db.commit()
             return redirect(
@@ -114,10 +139,6 @@ def trip(action, trip_id):
                 )
             )
 
-        trip_data = db.execute(
-            'SELECT * FROM trip WHERE trip_id=?',
-            (trip_id,)
-        ).fetchone()
     return render_template('forms/trip.html', trip=trip_data, action=action)
 
 
@@ -128,8 +149,8 @@ def trip_info(trip_id, section, action, section_id):
     db = get_db()
 
     trip = db.execute(
-        'SELECT * FROM trip WHERE trip_id = ?',
-        (trip_id,)
+        'SELECT * FROM trip WHERE trip_id = ? and user_id_fk = ?',
+        (trip_id, session['user_id'], )
     ).fetchone()
 
     if section == 'transport':
@@ -151,7 +172,7 @@ def trip_info(trip_id, section, action, section_id):
                     ' transport_start, transport_dur,'
                     ' transport_ref, transport_booking,'
                     ' transport_paid, transport_type, transport_time,'
-                    ' trip_id_fk,)'
+                    ' trip_id_fk)'
                     ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                     (transport_id, transport_name, transport_url,
                         transport_start, transport_dur,
@@ -227,17 +248,18 @@ def trip_info(trip_id, section, action, section_id):
                 accom_postcode = request.form['accom_postcode']
                 accom_booking = request.form['accom_booking']
                 accom_paid = request.form['accom_paid']
+                accom_time = request.form['accom_time']
                 trip_id_fk = trip_id
 
                 db.execute(
                     'INSERT INTO accommodation ('
                     ' accom_id, accom_start, accom_end, accom_name,'
-                    ' accom_url, accom_address, accon_postcode, trip_id_fk,'
-                    ' accom_booking, accom_paid)'
-                    ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                    ' accom_url, accom_address, accom_postcode, accom_time,'
+                    '  trip_id_fk, accom_booking, accom_paid)'
+                    ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                     (accom_id, accom_start, accom_end, accom_name,
-                        accom_url, accom_address, accom_postcode, trip_id_fk,
-                        accom_booking, accom_paid,)
+                        accom_url, accom_address, accom_postcode, accom_time,
+                        trip_id_fk, accom_booking, accom_paid,)
                 )
 
                 db.commit()
@@ -268,17 +290,19 @@ def trip_info(trip_id, section, action, section_id):
                 accom_postcode = request.form['accom_postcode']
                 accom_booking = request.form['accom_booking']
                 accom_paid = request.form['accom_paid']
+                accom_time = request.form['accom_time']
                 trip_id_fk = trip_id
 
                 db.execute(
                     'UPDATE accommodation '
                     'SET accom_start=?, accom_end=?, accom_name=?,'
                     ' accom_url=?, accom_address=?, accom_postcode=?,'
-                    ' accom_booking=?, accom_paid=?, trip_id_fk=?'
+                    ' accom_booking=?, accom_paid=?,'
+                    ' trip_id_fk=?, accom_time=?'
                     ' WHERE accom_id=?',
                     (accom_start, accom_end, accom_name, accom_url,
                         accom_address, accom_postcode, accom_booking,
-                        accom_paid, trip_id_fk, accom_id)
+                        accom_paid, trip_id_fk, accom_time, accom_id)
                 )
 
                 db.commit()
@@ -299,3 +323,81 @@ def trip_info(trip_id, section, action, section_id):
             return render_template(
                 'forms/accommodation.html', trip=trip, accom=accom
             )
+
+    if section == 'activities':
+        if action == 'add':
+            if request.method == 'POST':
+                activity_id = str(uuid.uuid4())
+                activity_name = request.form['activity_name']
+                activity_url = request.form['activity_url']
+                activity_description = request.form['activity_description']
+                activity_travel_time = request.form['activity_travel_time']
+                activity_travel_method = request.form['activity_travel_method']
+                activity_status = request.form['activity_status']
+
+                db.execute(
+                    'INSERT INTO activity ('
+                    ' activity_id, activity_name, activity_url,'
+                    ' activity_description, activity_travel_time, '
+                    ' activity_travel_method, activity_status, trip_id_fk)'
+                    ' VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                    (activity_id, activity_name, activity_url,
+                        activity_description, activity_travel_time,
+                        activity_travel_method, activity_status, trip_id,)
+                )
+
+                db.commit()
+                return redirect(
+                    url_for(
+                        'main.trip',
+                        trip_id=trip_id,
+                        action='view'
+                    )
+                )
+
+            return render_template(
+                'forms/activity.html',
+                action=action,
+                activity='',
+                trip=trip
+            )
+
+        if action == 'edit':
+            if request.method == 'POST':
+                activity_id = str(uuid.uuid4())
+                activity_name = request.form['activity_name']
+                activity_url = request.form['activity_url']
+                activity_description = request.form['activity_description']
+                activity_travel_time = request.form['activity_travel_time']
+                activity_travel_method = request.form['activity_travel_method']
+                activity_status = request.form['activity_status']
+
+                db.execute(
+                    'UPDATE activity'
+                    ' SET'
+                    '  activity_name = ?,'
+                    '  activity_url = ?,'
+                    '  activity_description = ?,'
+                    '  activity_travel_time = ?,'
+                    '  activity_travel_method = ?,'
+                    '  activity_status = ?,'
+                    '  trip_id_fk = ?'
+                    ' WHERE activity_id = ?',
+                    (activity_name, activity_url, activity_description,
+                        activity_travel_time, activity_travel_method,
+                        activity_status, trip_id, section_id,)
+                )
+                db.commit()
+                return redirect(
+                    url_for(
+                        'main.trip',
+                        action='view',
+                        trip_id=trip_id
+                    )
+                )
+
+            activity = db.execute(
+                'SELECT * FROM activity WHERE activity_id=?',
+                (section_id,)
+            ).fetchone()
+            return render_template('forms/activity.html', activity=activity)

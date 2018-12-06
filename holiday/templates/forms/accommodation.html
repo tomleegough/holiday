@@ -43,10 +43,15 @@
             <input name="accom_end" class="form-control" id="accom_end" value="{{ accom['accom_end'] }}" type="date" required>
         </div>
 
+        <div class="form-group">
+            <label for="accom_time" class="col-form-label">Check-in Time</label>
+            <input name="accom_time" class="form-control" id="accom_time" value="{{ accom['accom_time'] }}" type="time">
+        </div>
+
         <div clas="form-group">
             <label for="accom_booking" class="col-form-label">Booking status</lable>
             <select name="accom_booking" class="form-control" id="accom_booking">
-                <option value="na" {% if accom['accom_booking'] == 'na' %}selected{% endif %} >Not Required</option>
+                <option value="na" {% if accom['accom_booking'] == 'na' %}selected{% endif %}>Not Required</option>
                 <option value="nb" {% if accom['accom_booking'] == 'nb' %}selected{% endif %}>Not Booked</option>
                 <option value="bk" {% if accom['accom_booking'] == 'bk' %}selected{% endif %}>Booked</option>
             </select>
@@ -63,7 +68,7 @@
 
         <div class="form-group row">
             <div class="col">
-                <input id="submit" class="form-control btn btn-danger" type="submit" value="Submit">
+                <input id="submit" class="form-control btn btn-dark" type="submit" value="Submit">
             </div>
         </div>
 

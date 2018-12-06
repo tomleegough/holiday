@@ -6,6 +6,7 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from holiday.db import get_db
+from uuid import uuid4
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -36,41 +37,43 @@ def load_logged_in_user():
         ).fetchone()
 
 
-# @bp.route('/register', methods=('GET', 'POST'))
-# def register():
-#     """Register a new user.
+@bp.route('/register', methods=('GET', 'POST'))
+def register():
+    """Register a new user.
 
-#     Validates that the username is not already taken. Hashes the
-#     password for security.
-#     """
-#     if request.method == 'POST':
-#         username = request.form['username']
-#         password = request.form['password']
-#         db = get_db()
-#         error = None
+    Validates that the username is not already taken. Hashes the
+    password for security.
+    """
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        db = get_db()
+        error = None
 
-#         if not username:
-#             error = 'Username is required.'
-#         elif not password:
-#             error = 'Password is required.'
-#         elif db.execute(
-#             'SELECT id FROM user WHERE username = ?', (username,)
-#         ).fetchone() is not None:
-#             error = 'User {0} is already registered.'.format(username)
+        if not username:
+            error = 'Username is required.'
+        elif not password:
+            error = 'Password is required.'
+        elif db.execute(
+            'SELECT user_id FROM user WHERE user_name = ?', (username,)
+        ).fetchone() is not None:
+            error = 'User {0} is already registered.'.format(username)
 
-#         if error is None:
-#             # the name is available, store it in the database and go to
-#             # the login page
-#             db.execute(
-#                 'INSERT INTO user (user_name, user_pass) VALUES (?, ?)',
-#                 (username, generate_password_hash(password))
-#             )
-#             db.commit()
-#             return redirect(url_for('auth.login'))
+        if error is None:
+            # the name is available, store it in the database and go to
+            # the login page
+            user_id = str(uuid4())
 
-#         flash(error)
+            db.execute(
+                'INSERT INTO user (user_id, user_name, user_pass) VALUES (?, ?, ?)',
+                (user_id, username, generate_password_hash(password))
+            )
+            db.commit()
+            return redirect(url_for('auth.login'))
 
-#     return render_template('auth/register.html')
+        flash(error)
+
+    return render_template('auth/register.html')
 
 
 @bp.route('/login', methods=('GET', 'POST'))
@@ -100,8 +103,46 @@ def login():
 
     return render_template('auth/login.html')
 
+
 @bp.route('/logout')
 def logout():
     """Clear the current session, including the stored user id."""
     session.clear()
     return redirect(url_for('index'))
+
+
+@bp.route('/change', methods=['GET', 'POST'])
+def change_pass():
+    db = get_db()
+
+    if request.method == 'POST':
+
+        user = db.execute(
+            'SELECT * FROM user WHERE user_id = ?', (session['user_id'],)
+        ).fetchone()
+
+        username = user['user_name']
+        password = user['user_pass']
+        old_pass = request.form['old_password']
+        new_pass = request.form['new_password']
+        conf_pass = request.form['confirm_password']
+
+        if new_pass != conf_pass:
+            error = 'Passwords do not match'
+        if old_pass is None or new_pass is None or conf_pass is None:
+            error = 'Password cannot be blank'
+        if not check_password_hash(old_pass, password):
+            error = 'Incorrect password.'
+
+        if error is not None:
+            db.execute(
+                'UPDATE user'
+                ' SET user_pass = ?'
+                ' WHERE user_name = ?',
+                (generate_password_hash(new_pass), username,)
+            )
+
+            db.commit()
+            return redirect(url_for('main.index'))
+
+    return render_template('auth/change.html')
