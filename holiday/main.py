@@ -58,7 +58,7 @@ def trip(action, trip_id):
         ).fetchall()
 
         return render_template(
-            'holiday/trip-details.html',
+            'holiday/trip-details-table.html',
             trip=trip_data,
             accom=accommodation,
             trans=transport,
