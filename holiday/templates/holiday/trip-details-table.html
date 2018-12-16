@@ -6,7 +6,9 @@
 
 {% block toolbar %}
     
-    <a class="btn btn-outline-secondary" href="{{ url_for('main.trip', action='edit', trip_id=trip['trip_id']) }}">Edit</a>
+    <a class="btn btn-outline-secondary" href="{{ url_for('main.trip', action='edit', trip_id=trip['trip_id']) }}">
+        <i class="fas fa-edit"></i>
+    </a>
     
 {% endblock %}
 
@@ -23,7 +25,9 @@
     <div class="mt-3 bg-light sticky-top p-1 border-bottom border-top border-dark">
         <h2>
             Accommodation
-            <a href="{{ url_for('main.trip_info', action='add', section='accommodation', trip_id=trip['trip_id']) }}" class="btn btn-outline-secondary"> + </a>
+            <a href="{{ url_for('main.trip_info', action='add', section='accommodation', trip_id=trip['trip_id']) }}" class="btn btn-outline-secondary">
+                <i class="fas fa-plus"></i>
+            </a>
         </h2>
     </div>
 
@@ -38,7 +42,9 @@
                 <div class="row bg-dark text-light pr-1 justify-content-between">
                     <p class="m-1"><strong>{{each['accom_name']}}</strong></p>
                     <div class="m-1">
-                        <a class="btn btn-light btn-sm" href="{{ url_for('main.trip_info', action='edit', section='accommodation', trip_id=trip['trip_id'], section_id=each['accom_id']) }}">Edit</a>
+                        <a class="btn btn-light btn-sm" href="{{ url_for('main.trip_info', action='edit', section='accommodation', trip_id=trip['trip_id'], section_id=each['accom_id']) }}">
+                            <i class="fas fa-edit"></i>
+                        </a>
                     </div>
                 </div>
                 <div class="row">
@@ -89,7 +95,9 @@
     <div class="mt-3 bg-light sticky-top p-1 border-bottom border-top border-dark">
         <h2>
             Transport
-            <a href="{{ url_for('main.trip_info', section='transport', action='add', trip_id=trip['trip_id']) }}" class="btn btn-outline-secondary"> + </a>
+            <a href="{{ url_for('main.trip_info', section='transport', action='add', trip_id=trip['trip_id']) }}" class="btn btn-outline-secondary">
+                <i class="fas fa-plus"></i>
+            </a>
         </h2>
     </div>
 
@@ -101,23 +109,23 @@
                 <div class="row bg-dark text-light pr-1 justify-content-between">
                     <p class="m-1"><strong>{{each['transport_name']}}</strong></p>
                     <div class="m-1">
-                        <a class="btn btn-light btn-sm" href="{{ url_for('main.trip_info', action='edit', section='transport', trip_id=trip['trip_id'], section_id=each['transport_id']) }}">Edit</a>
+                        <a class="btn btn-light btn-sm" href="{{ url_for('main.trip_info', action='edit', section='transport', trip_id=trip['trip_id'], section_id=each['transport_id']) }}">
+                            <i class="fas fa-edit"></i>
+                        </a>
                     </div>
                 </div>
                 <div class="row">
                     <ul class="list-unstyled col-9 pr-0 m-0">
                         <li class="row">
-                            <strong class="col-4 p-1">Start:</strong>
-                            <span class="col-8 p-1">{{each['transport_start'].strftime('%d/%m/%y')}}</span>
+                            <strong class="col-4 p-1">Date:</strong>
+                            <span class="col-8 p-1">{{each['transport_start'].strftime('%d/%m/%y') each['transport_time']}}</span>
                         </li>
-                        <li class="row">
-                            <strong class="col-4 p-1">Time:</strong>
-                            <span class="col-8 p-1">{{each['transport_time']}}</span>
-                        </li>
+                    
                         <li class="row">
                             <strong class="col-4 p-1">Duration:</strong>
                             <span class="col-8 p-1">{{each['transport_dur']}}</span>
                         </li>
+
                         <li class="row">
                             <strong class="col-4 p-1">Notes:</strong>
                             <span class="col-8 p-1">{{each['transport_notes']}}</span>

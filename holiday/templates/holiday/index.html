@@ -4,7 +4,9 @@
 {% block header %}
     <h1>
         Trips
-        <a href="{{url_for('main.trip', action='add')}}" class="btn btn-outline-secondary"> + </a>
+        <a href="{{url_for('main.trip', action='add')}}" class="btn btn-outline-secondary">
+            <i class="fas fa-plus"></i>
+        </a>
     </h1>
 {% endblock %}
 
@@ -24,8 +26,12 @@
                 <div class="row bg-dark pr-1 text-light justify-content-between">
                     <p class="m-1"><strong>{{ trip['trip_name'] }}</strong></p>
                     <div class="m-1">
-                        <a class="btn btn-light btn-sm" href="{{ url_for('main.trip', action='view', trip_id=trip['trip_id']) }}">View</a>
-                        <a class="btn btn-light btn-sm" href="{{ url_for('main.trip', action='edit', trip_id=trip['trip_id']) }}">Edit</a>
+                        <a class="btn btn-light btn-sm" href="{{ url_for('main.trip', action='view', trip_id=trip['trip_id']) }}">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a class="btn btn-light btn-sm" href="{{ url_for('main.trip', action='edit', trip_id=trip['trip_id']) }}">
+                            <i class="fas fa-edit"></i>
+                        </a>
                     </div>
                 </div>
 
