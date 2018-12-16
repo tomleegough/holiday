@@ -206,6 +206,7 @@ def trip_info(trip_id, section, action, section_id):
                 transport_time = request.form['transport_time']
                 transport_type = request.form['transport_type']
                 transport_dur = request.form['transport_dur']
+                transport_notes = request.form['transport_notes']
                 transport_ref = request.form['transport_ref']
                 transport_booking = request.form['transport_booking']
                 transport_paid = request.form['transport_paid']
@@ -215,12 +216,12 @@ def trip_info(trip_id, section, action, section_id):
                     ' transport_start=?,transport_type=?,'
                     ' transport_dur=?, transport_ref=?,'
                     ' transport_booking=?, transport_paid=?,'
-                    ' transport_time=?'
+                    ' transport_time=?, transport_notes=?'
                     ' WHERE transport_id=?',
                     (transport_name, transport_url, transport_start,
                         transport_type, transport_dur, transport_ref,
                         transport_booking, transport_paid, transport_time,
-                        section_id,)
+                        transport_notes, section_id,)
                 )
                 db.commit()
                 return redirect(
