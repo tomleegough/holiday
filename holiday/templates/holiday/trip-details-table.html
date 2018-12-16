@@ -57,22 +57,24 @@
                         </li>
                     </ul>
                     <ul class="list-unstyled col-3">
+                        <li class="row"><strong>Booking:</strong></li>
                         <li class="row mt-2">
                             {% if each['accom_booking'] == 'nb' %}
-                                <span class="badge badge-danger col">Not booked</span>
+                                <span class="badge badge-danger col mr-1">Not booked</span>
                             {% elif each['accom_booking'] == 'bk' %}
-                                <span class="badge badge-success col">Booked</span>
+                                <span class="badge badge-success col mr-1">Booked</span>
                             {% else %}
-                                <span class="badge badge-info col">Not required</span>
+                                <span class="badge badge-info col mr-1">Not required</span>
                             {% endif %}
                         </li>
+                        <li class="row"><strong>Payment:</strong></li>
                         <li class="row mt-2">
                             {% if each['accom_paid'] == 'np' %}
-                                <span class="badge badge-danger col">Not paid</span>
+                                <span class="badge badge-danger col mr-1">Not paid</span>
                             {% elif each['accom_paid'] == 'pd' %}    
-                                <span class="badge badge-success col">Paid</span>
+                                <span class="badge badge-success col mr-1">Paid</span>
                             {% else %}
-                                <span class="badge badge-info col">Not required</span>
+                                <span class="badge badge-info col mr-1">Not required</span>
                             {% endif %}
                         </li>
                     </ul>
@@ -116,24 +118,30 @@
                             <strong class="col-4 p-1">Duration:</strong>
                             <span class="col-8 p-1">{{each['transport_dur']}}</span>
                         </li>
+                        <li class="row">
+                            <strong class="col-4 p-1">Notes:</strong>
+                            <span class="col-8 p-1">{{each['transport_notes']}}</span>
+                        </li>
                     </ul>
                     <ul class="list-unstyled col-3">
+                        <li class="row"><strong>Booking:</strong></li>
                         <li class="row mt-2">
                             {% if each['transport_booking'] == 'nb' %}
-                                <span class="badge badge-danger col">Not booked</span>
+                                <span class="badge badge-danger col mr-1">Not booked</span>
                             {% elif each['transport_booking'] == 'bk' %}
-                                <span class="badge badge-success col">Booked</span>
+                                <span class="badge badge-success col mr-1">Booked</span>
                             {% else %}
-                                <span class="badge badge-info col">Not required</span>
+                                <span class="badge badge-info col mr-1">Not required</span>
                             {% endif %}
                         </li>
+                        <li class="row"><strong>Payment:</strong></li>
                         <li class="row mt-2">
                             {% if each['transport_paid'] == 'np' %}
-                                <span class="badge badge-danger col">Not paid</span>
+                                <span class="badge badge-danger col mr-1">Not paid</span>
                             {% elif each['transport_paid'] == 'pd' %}    
-                                <span class="badge badge-success col">Paid</span>
+                                <span class="badge badge-success col mr-1">Paid</span>
                             {% else %}
-                                <span class="badge badge-info col">Not required</span>
+                                <span class="badge badge-info col mr-1">Not required</span>
                             {% endif %}
                         </li>
                     </ul>
