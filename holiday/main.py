@@ -40,14 +40,14 @@ def trip(action, trip_id):
         accommodation = db.execute(
             'SELECT * FROM accommodation'
             ' WHERE trip_id_fk = ?'
-            ' ORDER BY accom_start asc',
+            ' ORDER BY accom_start asc, accom_time asc',
             (trip_id,)
         ).fetchall()
 
         transport = db.execute(
             'SELECT * FROM transport'
             ' WHERE trip_id_fk = ?'
-            ' ORDER BY transport_start asc',
+            ' ORDER BY transport_start asc, transport_time asc',
             (trip_id,)
         ).fetchall()
 

@@ -99,7 +99,7 @@
                 <div class="row bg-dark text-light pr-1 justify-content-between">
                     <p class="m-1"><strong>{{each['transport_name']}}</strong></p>
                     <div class="m-1">
-                        <a class="btn btn-light btn-sm" href="{{ url_for('main.trip_info', action='edit', section='transport', trip_id=trip['trip_id'], section_id=each['accom_id']) }}">Edit</a>
+                        <a class="btn btn-light btn-sm" href="{{ url_for('main.trip_info', action='edit', section='transport', trip_id=trip['trip_id'], section_id=each['transport_id']) }}">Edit</a>
                     </div>
                 </div>
                 <div class="row">
@@ -121,7 +121,7 @@
                         <li class="row mt-2">
                             {% if each['transport_booking'] == 'nb' %}
                                 <span class="badge badge-danger col">Not booked</span>
-                            {% elif each['transort_booking'] == 'bk' %}
+                            {% elif each['transport_booking'] == 'bk' %}
                                 <span class="badge badge-success col">Booked</span>
                             {% else %}
                                 <span class="badge badge-info col">Not required</span>
