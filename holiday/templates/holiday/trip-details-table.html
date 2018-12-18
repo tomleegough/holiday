@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="mt-3 bg-light sticky-top p-1 border-bottom border-top border-dark">
+    <div class="my-3 bg-light sticky-top p-1 border-bottom border-top border-dark shadow">
         <h2 class="sticky-top">Overview</h2>
     </div>
     <ul class="list-unstyled">
@@ -22,7 +22,7 @@
     </ul>
 
     {% if trip['trip_accommodation'] == 1 %}
-    <div class="mt-3 bg-light sticky-top p-1 border-bottom border-top border-dark">
+    <div class="my-3 bg-light sticky-top p-1 border-bottom border-top border-dark shadow">
         <h2>
             Accommodation
             <a href="{{ url_for('main.trip_info', action='add', section='accommodation', trip_id=trip['trip_id']) }}" class="btn btn-outline-secondary">
@@ -33,14 +33,11 @@
 
         {% if accom == [] %}
         <p><strong>Add Accommodation!</strong></p>
-        {% endif %}
-
-        {% if accom != [] %}
-        
+        {% else %}
             {% for each in accom %}
-            <div class="container-fluid mt-3 border">
+            <div class="container-fluid mt-3 border my-3 shadow">
                 <div class="row bg-dark text-light pr-1 justify-content-between">
-                    <p class="m-1"><strong>{{each['accom_name']}}</strong></p>
+                    <p class="m-1 ml-2"><strong>{{each['accom_name']}}</strong></p>
                     <div class="m-1">
                         <a class="btn btn-light btn-sm" href="{{ url_for('main.trip_info', action='edit', section='accommodation', trip_id=trip['trip_id'], section_id=each['accom_id']) }}">
                             <i class="fas fa-edit"></i>
@@ -50,16 +47,16 @@
                 <div class="row">
                     <ul class="list-unstyled col-9 pr-0 m-0">
                         <li class="row">
-                            <strong class="col-4 p-1">Check in:</strong>
-                            <span class="col-8 p-1">{{each['accom_start'].strftime('%d/%m/%y')}} {{each['accom_time']}}</span>
+                            <strong class="col-3 p-1">Check in:</strong>
+                            <span class="col-9 p-1">{{each['accom_start'].strftime('%d/%m/%y')}} {{each['accom_time']}}</span>
                         </li>
                         <li class="row">
-                            <strong class="col-4 p-1">Check out:</strong>
-                            <span class="col-8 p-1">{{each['accom_end'].strftime('%d/%m/%y')}}</span>
+                            <strong class="col-3 p-1">Check out:</strong>
+                            <span class="col-9 p-1">{{each['accom_end'].strftime('%d/%m/%y')}}</span>
                         </li>
                         <li class="row">
-                            <strong class="col-4 p-1">Postcode:</strong>
-                            <span class="col-8 p-1">{{each['accom_postcode']}}</span>
+                            <strong class="col-3 p-1">Postcode:</strong>
+                            <span class="col-9 p-1">{{each['accom_postcode']}}</span>
                         </li>
                     </ul>
                     <ul class="list-unstyled col-3">
@@ -88,27 +85,37 @@
             </div>
             {% endfor %}
         {% endif %}
-
     {% endif %}
     
     {% if trip['trip_transport'] == 1 %}
-    <div class="mt-3 bg-light sticky-top p-1 border-bottom border-top border-dark">
-        <h2>
-            Transport
-            <a href="{{ url_for('main.trip_info', section='transport', action='add', trip_id=trip['trip_id']) }}" class="btn btn-outline-secondary">
-                <i class="fas fa-plus"></i>
-            </a>
-        </h2>
-    </div>
+        <div class="bg-light sticky-top p-1 border-bottom border-top border-dark my-3 shadow">
+            <h2>
+                Transport
+                <a href="{{ url_for('main.trip_info', section='transport', action='add', trip_id=trip['trip_id']) }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-plus"></i>
+                </a>
+            </h2>
+        </div>
 
         {% if trans == [] %}
-        <p><strong>Add Transport!</strong></p>
+            <p><strong>Add Transport!</strong></p>
         {% else %}
             {% for each in trans %}
-            <div class="container-fluid mt-3 border">
+            <div class="container-fluid mt-3 border my-3 shadow">
                 <div class="row bg-dark text-light pr-1 justify-content-between">
-                    <p class="m-1"><strong>{{each['transport_name']}}</strong></p>
+                    <p class="m-1 ml-0"><strong>{{each['transport_name']}}</strong></p>
                     <div class="m-1">
+                    {% if each['transport_type'] == 'car' %}
+                        <i class="mr-1 fas fa-car"></i>
+                    {% elif each['transport_type'] == 'ferry' %}
+                        <i class="mr-1 fas fa-ship"></i>
+                    {% elif each['transprot_type'] == 'airplane' %}
+                        <i class="mr-1 fas fa-plane"></i>
+                    {% elif each['transport_type'] == 'train' %}
+                        <i class="mr-1 fas fa-train"></i>
+                    {% else %}
+                        <i class="mr-1 fas fa-question-circle"></i>
+                    {% endif %}
                         <a class="btn btn-light btn-sm" href="{{ url_for('main.trip_info', action='edit', section='transport', trip_id=trip['trip_id'], section_id=each['transport_id']) }}">
                             <i class="fas fa-edit"></i>
                         </a>
@@ -117,18 +124,18 @@
                 <div class="row">
                     <ul class="list-unstyled col-9 pr-0 m-0">
                         <li class="row">
-                            <strong class="col-4 p-1">Date:</strong>
-                            <span class="col-8 p-1">{{each['transport_start'].strftime('%d/%m/%y')}} {{each['transport_time']}}</span>
+                            <strong class="col-3 p-1">Date:</strong>
+                            <span class="col-9 p-1">{{each['transport_start'].strftime('%d/%m/%y')}} {{each['transport_time']}}</span>
                         </li>
                     
                         <li class="row">
-                            <strong class="col-4 p-1">Duration:</strong>
-                            <span class="col-8 p-1">{{each['transport_dur']}}</span>
+                            <strong class="col-3 p-1">Duration:</strong>
+                            <span class="col-9 p-1">{{each['transport_dur']}}</span>
                         </li>
 
                         <li class="row">
-                            <strong class="col-4 p-1">Notes:</strong>
-                            <span class="col-8 p-1">{{each['transport_notes']}}</span>
+                            <strong class="col-3 p-1">Notes:</strong>
+                            <span class="col-9 p-1">{{each['transport_notes']}}</span>
                         </li>
                     </ul>
                     <ul class="list-unstyled col-3">
@@ -157,51 +164,73 @@
             </div>
             {% endfor %}
         {% endif %}
-
     {% endif %}
 
     {% if trip['trip_activities'] == 1 %}
-    <h2 class="mt-3">
-        Activities
-        <a href="{{ url_for('main.trip_info', section='activities', action='add', trip_id=trip['trip_id']) }}" class="btn btn-outline-secondary"> + </a>
-    </h2>
+    <div class="my-3 bg-light sticky-top p-1 border-bottom border-top border-dark shadow">
+        <h2>
+            Activities
+            <a href="{{ url_for('main.trip_info', section='activities', action='add', trip_id=trip['trip_id']) }}" class="btn btn-outline-secondary">
+                <i class="fas fa-plus"></i>
+            </a>
+        </h2>
+    </div>
 
         {% if activities == [] %}
         <p><strong>Add Activities!</strong></p>
-        {% endif %}
-
-        {% if activities != [] %}
-        <table class="table table-striped table-sm">
-            <tr>
-                <th>Name</th>
-                <th>Travel Method</th>
-                <th>Travel Time</th>
-                <th>Status</th>
-            </tr>
-
+        {% else %}
             {% for each in activities %}
-            <tr>
-                <td>
-                    <a href="{{ url_for('main.trip_info', section='activities', action='edit', trip_id=trip['trip_id'], section_id=each['activity_id'] )}}">
-                    {{each['activity_name']}}
-                    </a>
-                </td>
-                <td class="text-capitalize">{{ each['activity_travel_method'] }}</td>
-                <td>{{ each['activity_travel_time'] }}</td>
-                <td class="p-0">
-                        {% if each['activity_status'] == 'open' %}
-                            <span class="badge badge-danger">&#10005;</span>
-                        {% elif each['transport_paid'] == 'closed' %}
-                            <span class="badge badge-success">&#10003;</span>
-                        {% else %}
-                            <span>n/a</span>
-                        {% endif %}
-                </td>
-            </tr>
+
+            <div class="container-fluid mt-3 border my-3 shadow">
+                <div class="row bg-dark text-light pr-1 justify-content-between">
+                    <p class="m-1"><strong>{{each['activity_name']}}</strong></p>
+                    <div class="m-1">
+                        <a class="btn btn-light btn-sm" href="{{ url_for('main.trip_info', action='edit', section='activities', section_id=each['activity_id'], trip_id=trip['trip_id']) }}">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="row container">
+                    <ul class="list-unstyled col-9 pr-0 m-0">
+                        
+                        <li class="row">
+                            <strong class="col-3 p-1">Travel Method:</strong>
+                            <span class="col-9 p-1 text-capitalize">{{ each['activity_travel_method'] }}</span>
+                        </li>
+                    
+                        <li class="row">
+                            <strong class="col-3 p-1">Travel Time:</strong>
+                            <span class="col-9 p-1">{{ each['activity_travel_time'] }}</span>
+                        </li>
+                    </ul>
+
+                    <ul class="list-unstyled col-3 pr-0 m-0">
+                        <li class="row"><strong>Status:</strong></li>
+                        <li class="row mt-2">
+                            {% if each['activity_status'] == 'open' %}
+                                <span class="badge badge-danger col mr-1">
+                                    <i class="fas fa-times"></i>
+                                </span>
+                            {% else %}
+                                <span class="badge badge-success col mr-1">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="row container-fluid">
+                    <div class="col">
+                        <div class="row">
+                            <strong class="pd-1 pl-1">Description:</strong>
+                            <a class="text-dark" data-toggle="collapse" href="#activity_desc_{{each['row_num']}}" role="button" aria-expanded="false" aria-controls="activity_desc_{{each['row_num']}}"><i class="ml-2 fas fa-caret-right"></i></a>
+                        </div>
+                    <span class="p-1 row collapse" id="activity_desc_{{each['row_num']}}">{{ each['activity_description'] }}</span>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
-        </table>
         {% endif %}
-
     {% endif %}
-
 {% endblock %}

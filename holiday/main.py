@@ -52,7 +52,8 @@ def trip(action, trip_id):
         ).fetchall()
 
         activities = db.execute(
-            'SELECT * FROM activity'
+            'SELECT *, ROW_NUMBER() OVER (ORDER BY (SELECT 1)) AS row_num'
+            ' FROM activity'
             ' WHERE trip_id_fk = ?',
             (trip_id,)
         ).fetchall()
