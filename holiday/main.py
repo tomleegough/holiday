@@ -87,12 +87,12 @@ def trip(action, trip_id):
             db.execute(
                 'INSERT INTO trip (trip_id, trip_name,'
                 '  trip_start, trip_end, trip_accommodation,'
-                '  trip_transport, trip_activities)'
+                '  trip_transport, trip_activities, user_id_fk)'
                 ' VALUES'
-                '  (?, ?, ?, ?, ?, ?, ?)',
+                '  (?, ?, ?, ?, ?, ?, ?, ?)',
                 (str(uuid.uuid4()), trip_name, trip_start,
                     trip_end, trip_accommodation,
-                    trip_transport, trip_activities)
+                    trip_transport, trip_activities, session['user_id'])
             )
             db.commit()
             return redirect(url_for('main.index'))
