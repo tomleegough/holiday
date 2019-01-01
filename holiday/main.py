@@ -5,7 +5,10 @@ from flask import (
 from holiday.auth import login_required
 from holiday.db import get_db
 
+from datetime import datetime
+import pytz
 import uuid
+import icalendar
 
 bp = Blueprint('main', __name__)
 
@@ -367,7 +370,6 @@ def trip_info(trip_id, section, action, section_id):
 
         if action == 'edit':
             if request.method == 'POST':
-                activity_id = str(uuid.uuid4())
                 activity_name = request.form['activity_name']
                 activity_url = request.form['activity_url']
                 activity_description = request.form['activity_description']
@@ -404,3 +406,28 @@ def trip_info(trip_id, section, action, section_id):
                 (section_id,)
             ).fetchone()
             return render_template('forms/activity.html', activity=activity)
+
+@bp.route('/calendar')
+@login_required
+def calendar():
+
+    db = get_db()
+
+    cal = icalendar.Calendar()
+    cal.add('prodid', '-//tripper//tlg-accounting.co.uk')
+    cal.add('version', '2.0')
+
+    trips = db.execute(
+        'SELECT * FROM trip'
+    ).fetchall()
+
+    for trip in trips:
+        event = icalendar.Event()
+        event['uid'] = trip['trip_id']
+        event.add('Summary', trip['trip_name'])
+        event.add('dtstart', trip['trip_start'])
+        event.add('dtend', trip['trip_end'])
+        cal.add_component(event)
+
+    return cal.to_ical()
+
