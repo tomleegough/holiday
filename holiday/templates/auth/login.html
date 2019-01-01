@@ -5,7 +5,8 @@
 
 {% block content %}
     <div class="container col-sm-12 mt-3 col-lg-6 mx-auto">
-          <h1>Login</h1>
+        <h1>Login</h1>
+
         <div class="container mx-auto">
             <form method="post">    
                 <div class="form-group row">
@@ -22,6 +23,10 @@
                     <input type="submit" class="btn btn-dark form-control" value="Log In">
                 </div>
             </form>
+        </div>
+
+        <div class="ml-0">
+            <a href="{{ url_for('auth.register') }}">Register</a>
         </div>
     </div>
 {% endblock %}
