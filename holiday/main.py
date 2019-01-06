@@ -5,8 +5,6 @@ from flask import (
 from holiday.auth import login_required
 from holiday.db import get_db
 
-from datetime import datetime
-import pytz
 import uuid
 import icalendar
 
