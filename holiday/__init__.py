@@ -39,10 +39,10 @@ from holiday import db
 db.init_app(app)
 
 # apply the blueprints to the app
-from holiday import auth, main
+from holiday import auth, main, db_queries
 app.register_blueprint(auth.bp)
 app.register_blueprint(main.bp)
-
+app.register_blueprint(db_queries.bp)
 
 # make url_for('index') == url_for('blog.index')
 # in another app, you might define a separate main index here with

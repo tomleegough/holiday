@@ -4,6 +4,7 @@ from flask import (
 
 from holiday.auth import login_required
 from holiday.db import get_db
+import holiday.db_queries as db_queries
 
 import uuid
 import icalendar
@@ -15,14 +16,7 @@ bp = Blueprint('main', __name__)
 @login_required
 def index():
 
-    db = get_db()
-
-    trips = db.execute(
-        'SELECT * FROM trip'
-        ' WHERE user_id_fk=?'
-        ' ORDER BY trip_start ASC',
-        (session['user_id'],)
-    ).fetchall()
+    trips = db_queries.get_all_trips()
 
     return render_template('holiday/index.html', trips=trips)
 
@@ -32,32 +26,13 @@ def index():
 @login_required
 def trip(action, trip_id):
     db = get_db()
-    trip_data = db.execute(
-        'SELECT * FROM trip WHERE trip_id=? and user_id_fk=?',
-        (trip_id, session['user_id'],)
-    ).fetchone()
+
+    trip_data = db_queries.get_one_trip(trip_id)
 
     if action == 'view':
-        accommodation = db.execute(
-            'SELECT * FROM accommodation'
-            ' WHERE trip_id_fk = ?'
-            ' ORDER BY accom_start asc, accom_time asc',
-            (trip_id,)
-        ).fetchall()
-
-        transport = db.execute(
-            'SELECT * FROM transport'
-            ' WHERE trip_id_fk = ?'
-            ' ORDER BY transport_start asc, transport_time asc',
-            (trip_id,)
-        ).fetchall()
-
-        activities = db.execute(
-            'SELECT *, ROW_NUMBER() OVER (ORDER BY (SELECT 1)) AS row_num'
-            ' FROM activity'
-            ' WHERE trip_id_fk = ?',
-            (trip_id,)
-        ).fetchall()
+        accommodation = db_queries.get_trip_accommodation(trip_id)
+        transport = db_queries.get_trip_transport(trip_id)
+        activities = db_queries.get_trip_activities(trip_id)
 
         return render_template(
             'holiday/trip-details-table.html',
