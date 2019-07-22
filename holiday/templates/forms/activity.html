@@ -24,7 +24,17 @@
 
         <div class="form-group">
             <label for="activity_url" class="col-form-label">url</label>
-            <input name="activity_url" class="form-control" id="activity_url" placeholder="{% if activity['activity_url'] != ''%}https://{% else %}{{ activity['activity_url'] }}{% endif %}" >
+            <input
+                name="activity_url"
+                class="form-control"
+                id="activity_url"
+                placeholder="
+                    {% if activity['activity_url'] == '' %}
+                        https://
+                    {% else %}
+                        {{ activity['activity_url'] }}
+                    {% endif %}"
+            >
         </div>
 
         <div clas="form-group">
