@@ -32,6 +32,9 @@
                         <a class="btn btn-light btn-sm" href="{{ url_for('main.trip', action='edit', trip_id=trip['trip_id']) }}">
                             <i class="fas fa-edit"></i>
                         </a>
+                        <a class="btn btn-light btn-sm" href="{{ url_for('main.trip', action='delete', trip_id=trip['trip_id']) }}">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
                     </div>
                 </div>
 
