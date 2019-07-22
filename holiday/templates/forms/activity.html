@@ -37,7 +37,7 @@
             >
         </div>
 
-        <div clas="form-group">
+        <div class="form-group">
             <label for="activity_travel_method" class="col-form-label">Travel Method</lable>
             <select name="activity_travel_method" class="form-control" id="activity_travel_method">
                 <option value="car" {% if activity['activity_travel_method'] == 'car' %}selected{% endif %}>Car</option>
@@ -52,7 +52,7 @@
             <input name="activity_travel_time" class="form-control" id="activity_travel_time" value="{{ activity['activity_travel_time'] }}" type="">
         </div>
 
-        <div clas="form-group">
+        <div class="form-group">
             <label for="activity_status" class="col-form-label">Status</lable>
             <select name="activity_status" class="form-control" id="activity_status">
                 <option value="open" {% if activity['activity_status'] == 'open' %}selected{% endif %}>Not done</option>
