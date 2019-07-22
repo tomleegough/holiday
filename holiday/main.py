@@ -11,13 +11,17 @@ import icalendar
 
 bp = Blueprint('main', __name__)
 
+# TODO: Create activity view-only, not + edit
+# TODO: Move activity/transport/accomodation delete to edit view
+# TODO: Move queries out of this file
+# TODO: Better sign up process, like Hermes
+# TODO: Invite friends to trips
+# TODO: Archive trips / Hide trips after end date
 
 @bp.route('/')
 @login_required
 def index():
-
     trips = db_queries.get_all_trips()
-
     return render_template('holiday/index.html', trips=trips)
 
 
@@ -25,6 +29,7 @@ def index():
 @bp.route('/trip/<action>/<trip_id>', methods=['POST', 'GET'])
 @login_required
 def trip(action, trip_id):
+    # TODO: Split action with and without trip id
     db = get_db()
 
     trip_data = db_queries.get_one_trip(trip_id)
@@ -116,6 +121,37 @@ def trip(action, trip_id):
                 )
             )
 
+    if action == 'delete':
+            db.execute(
+                'DELETE FROM trip'
+                ' WHERE trip_id = ?',
+                (trip_id,)
+            )
+
+            db.execute(
+                'DELETE FROM transport'
+                ' WHERE trip_id_fk = ?',
+                (trip_id,)
+            )
+
+            db.execute(
+                'DELETE FROM accommodation'
+                ' WHERE trip_id_fk = ?',
+                (trip_id,)
+            )
+
+            db.execute(
+                'DELETE FROM activity'
+                ' WHERE trip_id_fk = ?',
+                (trip_id,)
+            )
+
+            db.commit()
+
+            return redirect(
+                url_for('main.index')
+            )
+
     return render_template('forms/trip.html', trip=trip_data, action=action)
 
 
@@ -123,6 +159,7 @@ def trip(action, trip_id):
 @bp.route('/<trip_id>/<action>/<section>/<section_id>', methods=['GET', 'POST'])
 @login_required
 def trip_info(trip_id, section, action, section_id):
+    # TODO: split sections into different functions
     db = get_db()
 
     trip = db.execute(
@@ -215,6 +252,23 @@ def trip_info(trip_id, section, action, section_id):
             ).fetchone()
             return render_template('forms/transport.html', trans=transport)
 
+        if action == 'delete':
+            db.execute(
+                'DELETE FROM transport'
+                ' WHERE transport_id = ?',
+                (section_id,)
+            )
+
+            db.commit()
+
+            return redirect(
+                url_for(
+                    'main.trip',
+                    action='view',
+                    trip_id=trip_id
+                )
+            )
+
     if section == 'accommodation':
         if action == 'add':
             if request.method == 'POST':
@@ -303,6 +357,23 @@ def trip_info(trip_id, section, action, section_id):
                 'forms/accommodation.html', trip=trip, accom=accom
             )
 
+        if action == 'delete':
+            db.execute(
+                'DELETE FROM accommodation'
+                ' WHERE accom_id = ?',
+                (section_id,)
+            )
+
+            db.commit()
+
+            return redirect(
+                url_for(
+                    'main.trip',
+                    action='view',
+                    trip_id=trip_id
+                )
+            )
+
     if section == 'activities':
         if action == 'add':
             if request.method == 'POST':
@@ -380,8 +451,27 @@ def trip_info(trip_id, section, action, section_id):
             ).fetchone()
             return render_template('forms/activity.html', activity=activity)
 
+        if action == 'delete':
+            db.execute(
+                'DELETE FROM activity'
+                ' WHERE activity_id = ?',
+                (section_id,)
+            )
+
+            db.commit()
+
+            return redirect(
+                url_for(
+                    'main.trip',
+                    action='view',
+                    trip_id=trip_id
+                )
+            )
+
 @bp.route('/calendar')
 @login_required
+# TODO: Make calendar secure
+# TODO: Make calendar subscribible
 def calendar():
 
     db = get_db()

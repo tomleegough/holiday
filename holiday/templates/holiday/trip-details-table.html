@@ -42,6 +42,9 @@
                         <a class="btn btn-light btn-sm" href="{{ url_for('main.trip_info', action='edit', section='accommodation', trip_id=trip['trip_id'], section_id=each['accom_id']) }}">
                             <i class="fas fa-edit"></i>
                         </a>
+                        <a class="btn btn-light btn-sm" href="{{ url_for('main.trip_info', action='delete', section='accommodation', trip_id=trip['trip_id'], section_id=each['accom_id']) }}">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
                     </div>
                 </div>
                 <div class="row">
@@ -119,6 +122,9 @@
                         <a class="btn btn-light btn-sm" href="{{ url_for('main.trip_info', action='edit', section='transport', trip_id=trip['trip_id'], section_id=each['transport_id']) }}">
                             <i class="fas fa-edit"></i>
                         </a>
+                        <a class="btn btn-light btn-sm" href="{{ url_for('main.trip_info', action='delete', section='transport', trip_id=trip['trip_id'], section_id=each['transport_id']) }}">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
                     </div>
                 </div>
                 <div class="row">
@@ -188,6 +194,9 @@
                         <a class="btn btn-light btn-sm" href="{{ url_for('main.trip_info', action='edit', section='activities', section_id=each['activity_id'], trip_id=trip['trip_id']) }}">
                             <i class="fas fa-edit"></i>
                         </a>
+                        <a class="btn btn-light btn-sm" href="{{ url_for('main.trip_info', action='delete', section='activities', trip_id=trip['trip_id'], section_id=each['activity_id']) }}">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
                     </div>
                 </div>
                 <div class="row container">
@@ -223,8 +232,10 @@
                 <div class="row container-fluid">
                     <div class="col">
                         <div class="row">
-                            <strong class="pd-1 pl-1">Description:</strong>
-                            <a class="text-dark" data-toggle="collapse" href="#activity_desc_{{each['row_num']}}" role="button" aria-expanded="false" aria-controls="activity_desc_{{each['row_num']}}"><i class="ml-2 fas fa-caret-right"></i></a>
+                            <a class="text-dark" data-toggle="collapse" href="#activity_desc_{{each['row_num']}}" role="button" aria-expanded="false" aria-controls="activity_desc_{{each['row_num']}}">
+                                <strong class="pd-1 pl-1">Description:</strong>
+                                <i class="ml-2 fas fa-caret-right"></i>
+                            </a>
                         </div>
                     <span class="p-1 row collapse" id="activity_desc_{{each['row_num']}}">{{ each['activity_description'] }}</span>
                     </div>
