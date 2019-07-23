@@ -395,7 +395,7 @@ def get_accomodation(accom_id):
         ' WHERE'
         '   accom_id=?',
         (
-            accom_id
+            accom_id,
         )
     ).fetchone()
 

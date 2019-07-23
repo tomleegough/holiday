@@ -55,7 +55,7 @@ def trip(action, trip_id):
     if action == 'view':
 
         return render_template(
-            'holiday/trip-details-table.html',
+            'holiday/trip-details-cards.html',
             trip=db_queries.get_one_trip(trip_id),
             accom=db_queries.get_trip_accommodation(trip_id),
             trans=db_queries.get_trip_transport(trip_id),
