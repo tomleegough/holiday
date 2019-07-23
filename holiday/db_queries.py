@@ -110,7 +110,7 @@ def create_trip(form_data):
             trip_accommodation,
             trip_transport,
             trip_activities,
-            session['user_id']
+            session['user_id'],
         )
     )
 
@@ -228,7 +228,7 @@ def create_transport(form_data, trip_id):
             form_data['transport_type'],
             form_data['transport_time'],
             form_data['transport_notes'],
-            trip_id
+            trip_id,
         )
     )
 
@@ -265,7 +265,7 @@ def update_transport(form_data, transport_id):
             form_data['transport_paid'],
             form_data['transport_time'],
             form_data['transport_notes'],
-            transport_id
+            transport_id,
         )
     )
 
@@ -297,7 +297,7 @@ def delete_transport(transport_id):
          ' WHERE'
          '   transport_id = ?',
          (
-             transport_id
+             transport_id,
           )
      )
 
@@ -343,7 +343,7 @@ def create_accomodation(form_data, trip_id):
             form_data['accom_time'],
             form_data['accom_booking'],
             form_data['accom_paid'],
-            trip_id
+            trip_id,
         )
     )
 
@@ -377,7 +377,7 @@ def update_accomodation(form_data, accom_id):
             form_data['accom_booking'],
             form_data['accom_paid'],
             form_data['accom_time'],
-            accom_id
+            accom_id,
         )
     )
 
@@ -411,7 +411,7 @@ def delete_accomodation(accom_id):
         ' WHERE'
         '   accom_id = ?',
         (
-            accom_id
+            accom_id,
         )
     )
 
@@ -450,7 +450,7 @@ def create_activity(form_data, trip_id):
             form_data['activity_travel_time'],
             form_data['activity_travel_method'],
             form_data['activity_status'],
-            trip_id
+            trip_id,
         )
     )
 
@@ -512,7 +512,7 @@ def delete_activity(activity_id):
         ' WHERE'
         '   activity_id = ?',
         (
-            activity_id
+            activity_id,
         )
     )
 
