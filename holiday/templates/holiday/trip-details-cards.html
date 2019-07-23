@@ -6,14 +6,14 @@
 
 {% block toolbar %}
     
-    <a class="btn btn-outline-secondary" href="{{ url_for('main.trip', action='edit', trip_id=trip['trip_id']) }}">
+    <a class="btn btn-secondary btn-lg" href="{{ url_for('main.trip', action='edit', trip_id=trip['trip_id']) }}">
         <i class="fas fa-edit"></i>
     </a>
     
 {% endblock %}
 
 {% block content %}
-    <div class="my-3 bg-light sticky-top p-1 border-bottom border-top border-dark shadow">
+    <div class="my-3 bg-secondary sticky-top p-1 border-bottom border-top border-dark shadow">
         <h2 class="sticky-top">Overview</h2>
     </div>
     <ul class="list-unstyled">
@@ -22,7 +22,7 @@
     </ul>
 
     {% if trip['trip_accommodation'] == 1 %}
-    <div class="my-3 bg-light sticky-top p-1 border-bottom border-top border-dark shadow">
+    <div class="my-3 bg-secondary sticky-top p-1 border-bottom border-top border-dark shadow">
         <h2>
             Accommodation
             <a href="{{ url_for('main.trip_info', action='add', section='accommodation', trip_id=trip['trip_id']) }}" class="btn btn-outline-secondary">
@@ -36,13 +36,13 @@
         {% else %}
             {% for each in accom %}
             <div class="container-fluid mt-3 border my-3 shadow">
-                <div class="row bg-dark text-light pr-1 justify-content-between">
+                <div class="row bg-info text-light pr-1 justify-content-between">
                     <p class="m-1 ml-2"><strong>{{each['accom_name']}}</strong></p>
                     <div class="m-1">
-                        <a class="btn btn-light btn-sm" href="{{ url_for('main.trip_info', action='edit', section='accommodation', trip_id=trip['trip_id'], section_id=each['accom_id']) }}">
+                        <a class="btn btn-secondary btn-lg" href="{{ url_for('main.trip_info', action='edit', section='accommodation', trip_id=trip['trip_id'], section_id=each['accom_id']) }}">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <a class="btn btn-light btn-sm" href="{{ url_for('main.trip_info', action='delete', section='accommodation', trip_id=trip['trip_id'], section_id=each['accom_id']) }}">
+                        <a class="btn btn-secondary btn-lg" href="{{ url_for('main.trip_info', action='delete', section='accommodation', trip_id=trip['trip_id'], section_id=each['accom_id']) }}">
                             <i class="fas fa-trash-alt"></i>
                         </a>
                     </div>
@@ -91,7 +91,7 @@
     {% endif %}
     
     {% if trip['trip_transport'] == 1 %}
-        <div class="bg-light sticky-top p-1 border-bottom border-top border-dark my-3 shadow">
+        <div class="bg-secondary sticky-top p-1 border-bottom border-top border-dark my-3 shadow">
             <h2>
                 Transport
                 <a href="{{ url_for('main.trip_info', section='transport', action='add', trip_id=trip['trip_id']) }}" class="btn btn-outline-secondary">
@@ -105,7 +105,7 @@
         {% else %}
             {% for each in trans %}
             <div class="container-fluid mt-3 border my-3 shadow">
-                <div class="row bg-dark text-light pr-1 justify-content-between">
+                <div class="row bg-info text-light pr-1 justify-content-between">
                     <p class="m-1 ml-0"><strong>{{each['transport_name']}}</strong></p>
                     <div class="m-1">
                     {% if each['transport_type'] == 'car' %}
@@ -119,10 +119,10 @@
                     {% else %}
                         <i class="mr-1 fas fa-question-circle"></i>
                     {% endif %}
-                        <a class="btn btn-light btn-sm" href="{{ url_for('main.trip_info', action='edit', section='transport', trip_id=trip['trip_id'], section_id=each['transport_id']) }}">
+                        <a class="btn btn-secondary btn-lg" href="{{ url_for('main.trip_info', action='edit', section='transport', trip_id=trip['trip_id'], section_id=each['transport_id']) }}">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <a class="btn btn-light btn-sm" href="{{ url_for('main.trip_info', action='delete', section='transport', trip_id=trip['trip_id'], section_id=each['transport_id']) }}">
+                        <a class="btn btn-secondary btn-lg" href="{{ url_for('main.trip_info', action='delete', section='transport', trip_id=trip['trip_id'], section_id=each['transport_id']) }}">
                             <i class="fas fa-trash-alt"></i>
                         </a>
                     </div>
@@ -188,13 +188,13 @@
             {% for each in activities %}
 
             <div class="container-fluid mt-3 border my-3 shadow">
-                <div class="row bg-dark text-light pr-1 justify-content-between">
+                <div class="row bg-info text-light pr-1 justify-content-between">
                     <p class="m-1"><strong>{{each['activity_name']}}</strong></p>
                     <div class="m-1">
-                        <a class="btn btn-light btn-sm" href="{{ url_for('main.trip_info', action='edit', section='activities', section_id=each['activity_id'], trip_id=trip['trip_id']) }}">
+                        <a class="btn btn-secondary btn-lg" href="{{ url_for('main.trip_info', action='edit', section='activities', section_id=each['activity_id'], trip_id=trip['trip_id']) }}">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <a class="btn btn-light btn-sm" href="{{ url_for('main.trip_info', action='delete', section='activities', trip_id=trip['trip_id'], section_id=each['activity_id']) }}">
+                        <a class="btn btn-secondary btn-lg" href="{{ url_for('main.trip_info', action='delete', section='activities', trip_id=trip['trip_id'], section_id=each['activity_id']) }}">
                             <i class="fas fa-trash-alt"></i>
                         </a>
                     </div>
@@ -203,13 +203,13 @@
                     <ul class="list-unstyled col-9 pr-0 m-0">
                         
                         <li class="row">
-                            <strong class="col-3 p-1">Travel Method:</strong>
-                            <span class="col-9 p-1 text-capitalize">{{ each['activity_travel_method'] }}</span>
+                            <strong class="col-4 p-1">Travel Method:</strong>
+                            <span class="col-8 p-1 text-capitalize">{{ each['activity_travel_method'] }}</span>
                         </li>
                     
                         <li class="row">
-                            <strong class="col-3 p-1">Travel Time:</strong>
-                            <span class="col-9 p-1">{{ each['activity_travel_time'] }}</span>
+                            <strong class="col-4 p-1">Travel Time:</strong>
+                            <span class="col-8 p-1">{{ each['activity_travel_time'] }}</span>
                         </li>
                     </ul>
 
