@@ -10,11 +10,17 @@
 
 {% block toolbar %}
     <a href="{{url_for('main.create_trip')}}" class="btn btn-outline-primary">
-        <i class="fas fa-plus"></i>
+        <i class="fas fa-plus"></i> Add Trip
     </a>
-    <a href="#" class="btn btn-outline-primary">
-        <i class="fas fa-eye"></i>
-    </a>
+    {% if view == '' %}
+        <a href="{{url_for('main.hidden')}}" class="btn btn-outline-primary">
+            <i class="fas fa-eye"></i> Show Hidden
+        </a>
+    {% else %}
+        <a href="{{url_for('main.index')}}" class="btn btn-outline-primary">
+            <i class="fas fa-eye-slash"></i> Show Current
+        </a>
+    {% endif %}
 {% endblock %}
 
 
@@ -25,29 +31,23 @@
     {% else %}
         <div class="">
         {% for trip in trips %}
-            <div class="border mt-4 container shadow">
-                <div class="row bg-primary pr-1 text-light justify-content-between">
-                    <p class="m-1"><strong>{{ trip['trip_name'] }}</strong></p>
-                    <div class="m-1">
-                        <a class="btn btn-secondary" href="{{ url_for('main.trip', action='view', trip_id=trip['trip_id']) }}">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        <a class="btn btn-secondary" href="{{ url_for('main.trip', action='edit', trip_id=trip['trip_id']) }}">
-                            <i class="fas fa-edit"></i>
-                        </a>
+            <div class="card bg-primary text-white mt-3">
+                <a href="{{ url_for('main.trip', action='view', trip_id=trip['trip_id']) }}">
+                    <div class="card-header text-light">
+                        {{ trip['trip_name'] }}
                     </div>
-                </div>
+                </a>
 
-                <div class="row">
-                    <ul class="list-unstyled ml-1">
+                <div class="card-body bg-secondary text-dark">
+                    <ul class="list-group">
                         <li class="row">
-                            <strong class="col-4">From: </strong>
-                            <span class="col-8">{{ trip['trip_start'].strftime('%d %b %Y') }}</span>
+                            <strong class="col-3">From: </strong>
+                            <span class="col-9">{{ trip['trip_start'].strftime('%d %b %Y') }}</span>
                         </li>
-                        
+
                         <li class="row">
-                            <strong class="col-4">To: </strong>
-                            <span class="col-8">{{ trip['trip_end'].strftime('%d %b %Y') }}</span>
+                            <strong class="col-3">To: </strong>
+                            <span class="col-9">{{ trip['trip_end'].strftime('%d %b %Y') }}</span>
                         </li>
                     </ul>
                 </div>

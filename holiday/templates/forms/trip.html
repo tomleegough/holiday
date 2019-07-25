@@ -9,9 +9,11 @@
 {% endblock %}
 
 {% block toolbar %}
-    <a class="btn btn-secondary" href="{{ url_for('main.trip', action='delete', trip_id=trip['trip_id']) }}">
-        <i class="fas fa-trash-alt"></i> Delete Trip
+    {% if action != 'add' %}
+    <a class="mb-3 btn btn-danger btn-block" href="{{ url_for('main.trip', action='delete', trip_id=trip['trip_id']) }}">
+        <i class="fas fa-trash-alt"></i> Delete
     </a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -20,7 +22,7 @@
         <div class="form-group row">
             <label for="trip_name" class="col col-form-label">Trip Name</label>
             <div class="col">
-                <input name="trip_name" class="form-control" id="trip_name" value="{{ trip['trip_name'] }}"required>
+                <input name="trip_name" class="form-control" id="trip_name" value="{{ trip['trip_name'] }}" required>
             </div>
         </div>
 
@@ -61,7 +63,7 @@
         
         <div class="form-group row">
             <div class="col">
-                <input id="submit" class="form-control btn btn-primary " type="submit" value="Submit">
+                <button id="submit" class="btn btn-block btn-primary" type="submit">Submit</button>
             </div>
         </div>
     </form>
