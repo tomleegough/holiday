@@ -4,17 +4,45 @@ from flask import (
 
 from holiday.db import get_db
 from uuid import uuid4
+import datetime
 
 bp = Blueprint('db_queries', __name__)
+
+def get_all_current_trips():
+    db = get_db()
+
+    trips = db.execute(
+        'SELECT'
+        '   *'
+        ' FROM'
+        '   trip'
+        ' WHERE'
+        '   user_id_fk=? and'
+        '   trip_status is not "hidden" and'
+        '   trip_end >= ?'
+        ' ORDER BY trip_start ASC',
+        (
+            session['user_id'],
+            datetime.datetime.now().strftime('%Y-%m-%d'),
+        )
+    ).fetchall()
+
+    return trips
 
 def get_all_trips():
     db = get_db()
 
     trips = db.execute(
-        'SELECT * FROM trip'
-        ' WHERE user_id_fk=?'
+        'SELECT'
+        '   *'
+        ' FROM'
+        '   trip'
+        ' WHERE'
+        '   user_id_fk=?'
         ' ORDER BY trip_start ASC',
-        (session['user_id'],)
+        (
+            session['user_id'],
+        )
     ).fetchall()
 
     return trips
@@ -91,8 +119,10 @@ def create_trip(form_data):
         '  trip_accommodation,'
         '  trip_transport,'
         '  trip_activities,'
+        '  trip_status,'
         '  user_id_fk'
         ' ) VALUES ('
+        '  ?,'
         '  ?,'
         '  ?,'
         '  ?,'
@@ -110,6 +140,7 @@ def create_trip(form_data):
             trip_accommodation,
             trip_transport,
             trip_activities,
+            'show',
             session['user_id'],
         )
     )
@@ -181,6 +212,41 @@ def delete_trip(trip_id):
         'DELETE FROM activity'
         ' WHERE trip_id_fk = ?',
         (trip_id,)
+    )
+
+    db.commit()
+
+
+def archive_trip(trip_id):
+    db = get_db()
+
+    db.execute(
+        'UPDATE'
+        '  trip'
+        ' SET'
+        '  trip_status = "hidden"'
+        ' WHERE'
+        '  trip_id = ?',
+        (
+            trip_id,
+        )
+    )
+
+    db.commit()
+
+def unarchive_trip(trip_id):
+    db = get_db()
+
+    db.execute(
+        'UPDATE'
+        '  trip'
+        ' SET'
+        '  trip_status = "show"'
+        ' WHERE'
+        '  trip_id = ?',
+        (
+            trip_id,
+        )
     )
 
     db.commit()

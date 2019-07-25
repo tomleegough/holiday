@@ -3,10 +3,8 @@ from flask import (
 )
 
 from holiday.auth import login_required
-from holiday.db import get_db
 import holiday.db_queries as db_queries
 
-import uuid
 import icalendar
 
 bp = Blueprint('main', __name__)
@@ -17,23 +15,29 @@ bp = Blueprint('main', __name__)
 # TODO: Invite friends to trips
 # TODO: Archive trips / Hide trips after end date
 
+
 @bp.route('/')
 @login_required
 def index():
 
     return render_template(
         'holiday/index.html',
-        trips=db_queries.get_all_trips()
+        trips=db_queries.get_all_current_trips(),
+        view=''
     )
 
+@bp.route('/hidden_trips')
+@login_required
+def hidden():
+    return render_template(
+        'holiday/index.html',
+        trips=db_queries.get_all_trips(),
+        view='hidden'
+    )
 
 @bp.route('/trip/create/', methods=['POST', 'GET'])
 @login_required
 def create_trip():
-    trip = {
-        'trip_name': 'New Trip'
-    }
-
     if request.method == 'POST':
         db_queries.create_trip(request.form)
 
@@ -45,7 +49,8 @@ def create_trip():
 
     return render_template(
         'forms/trip.html',
-        trip=trip
+        trip='',
+        action='add'
     )
 
 @bp.route('/trip/<action>/<trip_id>', methods=['POST', 'GET'])
@@ -86,6 +91,24 @@ def trip(action, trip_id):
                 url_for('main.index')
             )
 
+    if action == 'archive':
+        db_queries.archive_trip(trip_id)
+
+        return redirect(
+            url_for(
+                'main.index'
+            )
+        )
+
+    if action == 'unarchive':
+        db_queries.unarchive_trip(trip_id)
+
+        return redirect(
+            url_for(
+                'main.index'
+            )
+        )
+
     return render_template(
         'forms/trip.html',
         trip=db_queries.get_one_trip(trip_id),
@@ -97,7 +120,6 @@ def trip(action, trip_id):
 @bp.route('/<trip_id>/<action>/<section>/<section_id>', methods=['GET', 'POST'])
 @login_required
 def trip_info(trip_id, section, action, section_id):
-    # TODO: split sections into different functions
 
     if section == 'transport':
         if action == 'add':
