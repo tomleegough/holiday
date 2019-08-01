@@ -126,15 +126,14 @@ def change_pass():
         old_pass = request.form['old_password']
         new_pass = request.form['new_password']
         conf_pass = request.form['confirm_password']
+        error = None
 
         if new_pass != conf_pass:
             error = 'Passwords do not match'
-        if old_pass is None or new_pass is None or conf_pass is None:
-            error = 'Password cannot be blank'
-        if not check_password_hash(old_pass, password):
-            error = 'Incorrect password.'
+        elif not check_password_hash(password, old_pass):
+            error = 'Incorrect password'
 
-        if error is not None:
+        if error is None:
             db.execute(
                 'UPDATE user'
                 ' SET user_pass = ?'
@@ -143,6 +142,12 @@ def change_pass():
             )
 
             db.commit()
+
+            flash('Password changed successfully')
+
             return redirect(url_for('main.index'))
+
+        else:
+            flash(error)
 
     return render_template('auth/change.html')
