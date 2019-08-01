@@ -4,26 +4,48 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container col-sm-12 mt-3 col-lg-6 mx-auto">
-        <h1>Register</h1>
+    <div class="p-5 mx-auto border mt-5 bg-light">
+            <h2 class="text-center">Register for Trip Planner!</h2>
 
-        <div class="container mx-auto">
+            <form method="post" class="p-md-5 mx-auto">
 
-            <form method="post">
-                <div class="form-group row">
-                    <label for="username" class="form-label col">Username</label>
-                    <input name="username" id="username" class="form-control col" required>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i id="user-icon" class="fas fa-at"></i></span>
+                        </div>
+                        <input name="username" id="username" class="form-control" placeholder="email" aria-describedby="user-icon" required>
+                    </div>
                 </div>
 
-                <div class="form-group row">
-                    <label for="password" class="form-label col">Password</label>
-                    <input type="password" name="password" id="password" class="form-control col" required>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-key"></i>
+                            </span>
+                        </div>
+
+                        <input type="password" name="password" id="password" class="form-control" placeholder="password" required>
+                    </div>
                 </div>
-                <div class="form-group row">
-                    <input type="submit" class="btn btn-primary form-control" value="Register">
+
+                <div class="form-group">
+                    <div class="mx-auto">
+                        <input type="submit" class="col btn btn-primary " value="Register">
+                    </div>
                 </div>
+
+                {% if error != '' %}
+                <div class="form-group row">
+                    <div class="col mx-auto">
+                        <p><strong>{{ error }}</strong></p>
+                    </div>
+                </div>
+                {% endif %}
+
             </form>
 
         </div>
-</div>
+
 {% endblock %}
