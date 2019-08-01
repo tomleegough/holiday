@@ -9,11 +9,31 @@
 {% endblock %}
 
 {% block toolbar %}
-    {% if action != 'add' %}
-    <a class="mb-3 btn btn-danger btn-block" href="{{ url_for('main.trip', action='delete', trip_id=trip['trip_id']) }}">
-        <i class="fas fa-trash-alt"></i> Delete
-    </a>
-    {% endif %}
+    <div class="mb-3">
+        {% if action != 'add' %}
+
+        <a href="{{ url_for('main.trip', action='view', trip_id=trip['trip_id']) }}">
+            <button class="btn btn-secondary">
+                <i class="fas fa-times"></i> Close
+            </button>
+        </a>
+
+        <a href="{{ url_for('main.trip', action='delete', trip_id=trip['trip_id']) }}">
+            <button class="btn btn-danger">
+                <i class="fas fa-trash-alt"></i> Delete
+            </button>
+        </a>
+        {% endif %}
+
+        {% if action == 'add' %}
+        <a href="{{ url_for('main.index') }}">
+            <button class="btn btn-secondary">
+                <i class="fas fa-times"></i> Close
+            </button>
+        </a>
+        {% endif %}
+
+    </div>
 {% endblock %}
 
 {% block content %}
